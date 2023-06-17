@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinkShortener.Api", "LinkShortener.Api\LinkShortener.Api.csproj", "{962A2443-FAB1-4DC7-8EC0-71DACA742B8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinkShortener.Domain", "LinkShortener.Domain\LinkShortener.Domain.csproj", "{8C1C4020-A0E0-4A91-8EF3-B9028B10211D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinkShortener.Application", "LinkShortener.Application\LinkShortener.Application.csproj", "{53375D03-FAA7-4A24-BFCF-51C03DF18CE4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinkShortener.Infrastructure", "LinkShortener.Infrastructure\LinkShortener.Infrastructure.csproj", "{61253888-E99B-412C-A023-2CAD7C61A4D6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{962A2443-FAB1-4DC7-8EC0-71DACA742B8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{962A2443-FAB1-4DC7-8EC0-71DACA742B8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{962A2443-FAB1-4DC7-8EC0-71DACA742B8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{962A2443-FAB1-4DC7-8EC0-71DACA742B8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C1C4020-A0E0-4A91-8EF3-B9028B10211D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C1C4020-A0E0-4A91-8EF3-B9028B10211D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C1C4020-A0E0-4A91-8EF3-B9028B10211D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C1C4020-A0E0-4A91-8EF3-B9028B10211D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53375D03-FAA7-4A24-BFCF-51C03DF18CE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53375D03-FAA7-4A24-BFCF-51C03DF18CE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53375D03-FAA7-4A24-BFCF-51C03DF18CE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53375D03-FAA7-4A24-BFCF-51C03DF18CE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61253888-E99B-412C-A023-2CAD7C61A4D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61253888-E99B-412C-A023-2CAD7C61A4D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61253888-E99B-412C-A023-2CAD7C61A4D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61253888-E99B-412C-A023-2CAD7C61A4D6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
