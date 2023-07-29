@@ -55,4 +55,12 @@ public class ShortenLinkController
     {
         return await queries.GetList();
     }
+    
+    [AllowAnonymous]
+    [HttpGet]
+    [Route("[action]")]
+    public async Task<string> GetFullLink(string token)
+    {
+        return await queries.GetFullLink(token);
+    }
 }

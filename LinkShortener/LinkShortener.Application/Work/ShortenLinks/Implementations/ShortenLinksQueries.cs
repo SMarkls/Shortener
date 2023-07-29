@@ -51,15 +51,26 @@ public class ShortenLinksQueries : IShortenLinksQueries
 
         return list;
     }
-    
-    
-        private async Task<ApplicationUser> GetOwnerByHttpContextAsync()
-        {
-            var claims = contextAccessor.HttpContext.User.Identities.First().Claims;
-            var ownerIdClaim = claims.Skip(3).First();
-            var ownerId = ownerIdClaim.Value;
-            var owner = await context.Users.FirstAsync(x => x.Id == ownerId);
-    
-            return owner;
-        }
+    private async Task<ApplicationUser> GetOwnerByHttpContextAsync()
+    {
+        var claims = contextAccessor.HttpContext.User.Identities.First().Claims;
+        var ownerIdClaim = claims.Skip(3).First();
+        var ownerId = ownerIdClaim.Value;
+        var owner = await context.Users.FirstAsync(x => x.Id == ownerId);
+
+        return owner;
+    }
+
+    public async Task<string> GetFullLink(string token)
+    {
+        var link = await context.Links.FirstOrDefaultAsync(x => x.Token == token);
+
+        if (link is null)
+            throw new NotFoundException(nameof(ShortenLink), token);
+
+        link.CountOfRedirections++;
+        await context.SaveChangesAsync();
+        
+        return link.FullLink;
+    }
 }

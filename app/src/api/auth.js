@@ -9,6 +9,9 @@ export default function (instance) {
 		logout() {
 			instance.defaults.headers['Authorization'] = ''
 			instance.defaults.headers['RefreshToken'] = ''
+		},
+		refreshToken(payload) {
+			return instance.post('/User/RefreshToken', payload)
 		}
 	}
 }

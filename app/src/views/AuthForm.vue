@@ -34,6 +34,7 @@
 				<button type="button" @click="switchButton">Уже есть аккаунт?</button>
 			</div>
 		</form>
+		<p>{{ errorMessage }}</p>
 	</div>
 </template>
 
@@ -48,7 +49,8 @@ export default {
 			login: '',
 			password: '',
 			acceptPassword: '',
-			isRegister: false
+			isRegister: false,
+			errorMessage: ''
 		}
 	},
 	mounted() {
@@ -81,10 +83,26 @@ export default {
 
 			let tokens = {}
 			if (this.isRegister) {
-				tokens = await this.$api.auth.register({ nickname: this.login, password: this.password, acceptPassword: this.acceptPassword })
+				try {
+					tokens = await this.$api.auth.register({ nickname: this.login, password: this.password, acceptPassword: this.acceptPassword })
+				}
+				catch (err) {
+					if (err.response.status == 400) {
+						this.errorMessage = 'Ошибка сервера, попробуйте позже!'
+					}
+					return
+				}
 			}
 			else {
-				tokens = await this.$api.auth.login({ nickname: this.login, password: this.password })
+				try {
+					tokens = await this.$api.auth.login({ nickname: this.login, password: this.password })
+				}
+				catch (err) {
+					if (err.response.status == 400) {
+						this.errorMessage = 'Неверный логин или пароль!'
+					}
+					return
+				}
 			}
 			this.$store.commit('authorizationTokens/SET_TOKENS', { accessToken: tokens.data.accessToken, refreshToken: tokens.data.refreshToken })
 			this.$emit('successfullyLogined')
@@ -172,5 +190,9 @@ small {
 .incorrect {
 	border-color: red;
 	border-width: 5px;
+}
+
+p {
+	color: red;
 }
 </style>

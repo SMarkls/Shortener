@@ -19,6 +19,9 @@ export default {
       isLogined: false
     }
   },
+  mounted() {
+    this.checkIsLogined()
+  },
   watch: {
     '$route.path'() {
       if (this.$route.fullPath == '/') {

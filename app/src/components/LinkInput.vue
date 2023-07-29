@@ -19,14 +19,14 @@ export default {
 		this.$emit('checkIsLogined')
 	},
 	methods: {
-		submitClicked(event) {
+		async submitClicked(event) {
 			if (!this.link.includes("https://")) {
-				this.link = 'https://' + this.link;
+				this.link = 'https://' + this.link
 			}
 			if (!this.isUrl(this.link)) {
 				return;
 			}
-			this.$api.shortenLink.createLink({ fullLink: this.link })
+			await this.$api.shortenLink.createLink({ fullLink: this.link })
 			location.reload()
 		},
 		isUrl(url) {

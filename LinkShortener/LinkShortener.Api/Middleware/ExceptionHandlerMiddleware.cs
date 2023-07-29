@@ -18,7 +18,7 @@ public class ExceptionHandlerMiddleware : IMiddleware
         catch (Exception e)
         {
             context.Response.Clear();
-            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            context.Response.ContentType = "text";
             await context.Response.WriteAsync(e.Message);
         }
     }
