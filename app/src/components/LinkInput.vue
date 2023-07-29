@@ -1,8 +1,8 @@
 <template>
 	<div>
-		<form method="post">
+		<form>
 			<input type="text" v-model="link" />
-			<button type="submit" @click="submitClicked">Сократить</button>
+			<button type="button" @click="submitClicked">Сократить</button>
 		</form>
 	</div>
 </template>
@@ -15,6 +15,9 @@ export default {
 			link: ''
 		}
 	},
+	mounted() {
+		this.$emit('checkIsLogined')
+	},
 	methods: {
 		submitClicked(event) {
 			if (!this.link.includes("https://")) {
@@ -23,6 +26,8 @@ export default {
 			if (!this.isUrl(this.link)) {
 				return;
 			}
+			this.$api.shortenLink.createLink({ fullLink: this.link })
+			location.reload()
 		},
 		isUrl(url) {
 			try {

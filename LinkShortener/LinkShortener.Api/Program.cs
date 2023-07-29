@@ -1,7 +1,8 @@
-using System.Net;
+
 using LinkShortener.Api.Middleware;
 using LinkShortener.Application;
 using LinkShortener.Infrastructure;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,8 +44,13 @@ builder.Services.AddApplication();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
+builder.Services.AddCors();
 
 var app = builder.Build();
+app.UseCors(policyBuilder => policyBuilder
+    .AllowAnyOrigin()
+    .AllowAnyHeader()
+    .AllowAnyMethod());
 app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 // Configure the HTTP request pipeline.

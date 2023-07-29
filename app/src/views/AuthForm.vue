@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h1>{{ getHeader() }}</h1>
-		<form @submit.prevent="submitHandler">
+		<form @submit.prevent="submitHandler" method="post">
 			<div>
 				<label for="login">Логин</label>
 				<input id="login" :class="v$.login.$errors.length > 0 ? 'incorrect' : ''" type="text" v-model="login"
@@ -51,6 +51,10 @@ export default {
 			isRegister: false
 		}
 	},
+	mounted() {
+		if (this.$store.getters['authorizationTokens/getTokens'][0] != '')
+			this.$router.push('/')
+	},
 	methods: {
 		getHeader() {
 			return this.isRegister ? 'Регистрация' : 'Авторизация'
@@ -65,7 +69,7 @@ export default {
 				elem.classList.remove('incorrect')
 			}
 		},
-		submitHandler() {
+		async submitHandler() {
 			if (this.isRegister && this.v$.$invalid) {
 				this.v$.$touch()
 				return
@@ -74,6 +78,18 @@ export default {
 				this.v$.$touch()
 				return
 			}
+
+			let tokens = {}
+			if (this.isRegister) {
+				tokens = await this.$api.auth.register({ nickname: this.login, password: this.password, acceptPassword: this.acceptPassword })
+			}
+			else {
+				tokens = await this.$api.auth.login({ nickname: this.login, password: this.password })
+			}
+			this.$store.commit('authorizationTokens/SET_TOKENS', { accessToken: tokens.data.accessToken, refreshToken: tokens.data.refreshToken })
+			this.$emit('successfullyLogined')
+			setTimeout(this.$router.go, 100, 0);
+			return
 		},
 		getLoginErrorMessage() {
 			if (this.v$.login.required.$invalid) {
