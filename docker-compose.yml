@@ -1,0 +1,25 @@
+version: '3.4'
+services:
+  server:
+    build: LinkShortener/
+    ports:
+      - 443:80
+    depends_on:
+      - db
+    environment:
+      - ConnectionStrings__DefaultConnection=User ID=postgres;Password=postgres;Server=db;Port=5432;Database=Shortener;IntegratedSecurity=true;Pooling=true
+  client:
+    build:
+      context: app/
+    ports:
+      - 3000:80
+  db:
+    image: postgres:15.3-alpine3.18
+    container_name: db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=Shortener
+    ports:
+      - 5432:5432
+    restart: always

@@ -19,10 +19,10 @@
 				</div>
 			</div>
 			<div v-if="isRegister">
-				<label for="acceptPassword">Повторите пароль</label>
-				<input id="acceptPassword" type="password" v-model="acceptPassword" />
+				<label for="accessPassword">Повторите пароль</label>
+				<input id="accessPassword" type="password" v-model="accessPassword" />
 				<div>
-					<small v-if="v$.acceptPassword.$dirty">{{ getAcceptPasswordMessage() }}</small>
+					<small v-if="v$.accessPassword.$dirty">{{ getAccessPasswordMessage() }}</small>
 				</div>
 			</div>
 			<div v-if="!isRegister">
@@ -48,7 +48,7 @@ export default {
 			v$: useValidate(),
 			login: '',
 			password: '',
-			acceptPassword: '',
+			accessPassword: '',
 			isRegister: false,
 			errorMessage: ''
 		}
@@ -84,7 +84,7 @@ export default {
 			let tokens = {}
 			if (this.isRegister) {
 				try {
-					tokens = await this.$api.auth.register({ nickname: this.login, password: this.password, acceptPassword: this.acceptPassword })
+					tokens = await this.$api.auth.register({ nickname: this.login, password: this.password, accessPassword: this.accessPassword })
 				}
 				catch (err) {
 					if (err.response.status == 400) {
@@ -128,8 +128,8 @@ export default {
 				return 'Длина пароля должна быть не менее 4 символов'
 			}
 		},
-		getAcceptPasswordMessage() {
-			if (this.v$.acceptPassword.sameAs.$invalid) {
+		getAccessPasswordMessage() {
+			if (this.v$.accessPassword.sameAs.$invalid) {
 				return 'Пароли не совпадают'
 			}
 		}
@@ -145,7 +145,7 @@ export default {
 				required,
 				minLength: minLength(4),
 			},
-			acceptPassword: {
+			accessPassword: {
 				sameAs: sameAs(this.password)
 			}
 		}

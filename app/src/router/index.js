@@ -48,6 +48,7 @@ function isUrl(link) {
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
+  mode: 'history',
   routes
 })
 
