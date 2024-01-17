@@ -1,5 +1,5 @@
 ﻿using LinkShortener.Domain.Common;
-using LinkShortener.Domain.Indetity.Entities;
+using LinkShortener.Domain.Identity.Entities;
 
 namespace LinkShortener.Domain.Entities;
 
@@ -12,19 +12,19 @@ public class ShortenLink : BaseEntity
     /// Короткий токен ссылки.
     /// </summary>
     public string Token { get; set; }
-    
+
     /// <summary>
     /// Полная ссылка.
     /// </summary>
     public string FullLink { get; set; }
-    
+
     /// <summary>
     /// Количество переходов по ссылке.
     /// </summary>
     public int CountOfRedirections { get; set; }
-    
+
     /// <summary>
     /// Наивагационное свойство - создатель ссылки.
     /// </summary>
-    public ApplicationUser Owner { get; set; }
+    public ApplicationUser? Owner { get; set; }
 }

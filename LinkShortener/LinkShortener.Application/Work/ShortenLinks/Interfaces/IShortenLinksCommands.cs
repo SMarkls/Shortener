@@ -4,7 +4,7 @@ namespace LinkShortener.Application.Work.ShortenLinks.Interfaces;
 
 public interface IShortenLinksCommands
 {
-    Task<long> CreateAsync(CreateShortenLinkDto dto);
-    Task UpdateAsync(UpdateShortenLinkDto dto);
-    Task DeleteAsync(long id);
+    Task<string> CreateAsync(CreateShortenLinkDto dto, string userId);
+    Task UpdateAsync(UpdateShortenLinkDto dto, string userId);
+    Task DeleteAsync(long id, string userId);
 }

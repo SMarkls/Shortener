@@ -6,7 +6,7 @@ public class LoginDto
     /// Имя пользователя.
     /// </summary>
     public string NickName { get; set; }
-    
+
     /// <summary>
     /// Пароль пользователя.
     /// </summary>

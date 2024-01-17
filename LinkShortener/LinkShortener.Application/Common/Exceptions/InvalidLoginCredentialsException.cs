@@ -1,12 +1,13 @@
 ﻿using System.Net;
+using LinkShortener.Application.Common.Exceptions.Common;
 
 namespace LinkShortener.Application.Common.Exceptions;
 
-public class InvalidLoginCredentialsException : Exception
+public class InvalidLoginCredentialsException : ApiException
 {
-    public static int Code => (int)HttpStatusCode.Forbidden;
+    public override int Code => (int)HttpStatusCode.Forbidden;
 
-    public InvalidLoginCredentialsException() : base($"Неверные данные для входа. {Code}")
+    public InvalidLoginCredentialsException() : base($"Неверные данные для входа")
     {
     }
 }

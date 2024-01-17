@@ -2,7 +2,7 @@
 using LinkShortener.Application.Common.Services;
 using LinkShortener.Application.Models.Identity.Dtos;
 using LinkShortener.Application.Models.Identity.ViewModels;
-using LinkShortener.Domain.Indetity.Entities;
+using LinkShortener.Domain.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace LinkShortener.Infrastructure.Services;
@@ -17,7 +17,7 @@ public class AuthService : IAuthService
         this.userManager = userManager;
         this.tokenService = tokenService;
     }
-    
+
     public async Task<AuthVm> Register(RegisterDto dto)
     {
         var result = await userManager.CreateAsync(new ApplicationUser { UserName = dto.NickName }, dto.Password);
@@ -38,7 +38,7 @@ public class AuthService : IAuthService
 
         if (isValidPassword)
             return await tokenService.GenerateTokenAsync(user);
-        
+
         throw new InvalidLoginCredentialsException();
     }
 }

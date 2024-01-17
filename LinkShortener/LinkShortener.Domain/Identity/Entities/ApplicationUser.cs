@@ -1,7 +1,7 @@
 ﻿using LinkShortener.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 
-namespace LinkShortener.Domain.Indetity.Entities;
+namespace LinkShortener.Domain.Identity.Entities;
 
 public class ApplicationUser : IdentityUser
 {
@@ -9,6 +9,6 @@ public class ApplicationUser : IdentityUser
     /// Навигационное свойство - сокращенные ссылки.
     /// </summary>
     public List<ShortenLink> ShortenLinks { get; }
-    
+
     public RefreshToken RefreshToken { get; set; }
 }

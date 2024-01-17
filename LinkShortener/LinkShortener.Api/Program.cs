@@ -2,16 +2,11 @@
 using LinkShortener.Api.Middleware;
 using LinkShortener.Application;
 using LinkShortener.Infrastructure;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
 builder.Services.AddTransient<ExceptionHandlerMiddleware>();
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -33,7 +28,7 @@ builder.Services.AddSwaggerGen(options =>
                     Type = ReferenceType.SecurityScheme,
                     Id = "Bearer"
                 }
-            }, 
+            },
             Array.Empty<string>()
         }
     });
@@ -41,9 +36,8 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
+builder.Services.AddDistributedMemoryCache();
 builder.Services.AddCors();
 
 var app = builder.Build();

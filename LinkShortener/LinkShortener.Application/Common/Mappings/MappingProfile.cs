@@ -3,6 +3,7 @@ using AutoMapper;
 
 namespace LinkShortener.Application.Common.Mappings;
 
+// TODO: Maybe delete?
 public class MappingProfile : Profile
 {
     public MappingProfile()

@@ -1,5 +1,5 @@
 ﻿using System.Net;
-using LinkShortener.Application.Common.Exceptions;
+using LinkShortener.Application.Common.Exceptions.Common;
 
 namespace LinkShortener.Api.Middleware;
 
@@ -11,14 +11,18 @@ public class ExceptionHandlerMiddleware : IMiddleware
         {
             await next(context);
         }
-        catch (OldRefreshTokenException)
+        catch (ApiException e)
         {
-            context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+            context.Response.Clear();
+            context.Response.ContentType = "text";
+            context.Response.StatusCode = e.Code;
+            await context.Response.WriteAsync(e.Message);
         }
         catch (Exception e)
         {
             context.Response.Clear();
             context.Response.ContentType = "text";
+            context.Response.StatusCode = (int)HttpStatusCode.Conflict;
             await context.Response.WriteAsync(e.Message);
         }
     }

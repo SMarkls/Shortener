@@ -1,4 +1,5 @@
-﻿using LinkShortener.Application.Work.ShortenLinks.Interfaces;
+﻿using System.Security.Claims;
+using LinkShortener.Application.Work.ShortenLinks.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CreateDto = LinkShortener.Application.Models.ShortenLinks.Dtos.CreateShortenLinkDto;
@@ -8,59 +9,86 @@ using GetVm = LinkShortener.Application.Models.ShortenLinks.ViewModels.ShortenLi
 namespace LinkShortener.Api.Controllers;
 
 [ApiController]
-[Authorize]
-[Route("[controller]")]
-public class ShortenLinkController
+[Route("[controller]/[action]")]
+public class ShortenLinkController : Controller
 {
     private readonly IShortenLinksCommands commands;
     private readonly IShortenLinksQueries queries;
+    private readonly IConfiguration configuration;
 
-    public ShortenLinkController(IShortenLinksCommands commands, IShortenLinksQueries queries)
+    public ShortenLinkController(IShortenLinksCommands commands, IShortenLinksQueries queries, IConfiguration configuration)
     {
         this.commands = commands;
         this.queries = queries;
+        this.configuration = configuration;
     }
 
     [HttpPost]
-    [Route("[action]")]
-    public async Task<long> Create(CreateDto dto)
+    public async Task<string> Create(CreateDto dto)
     {
-        return await commands.CreateAsync(dto);
+        var userIdClaim = GetUserIdClaim();
+        return await commands.CreateAsync(dto, userIdClaim?.Value ?? "");
     }
 
     [HttpPut]
-    [Route("[action]")]
+    [Authorize]
     public async Task Update(UpdateDto dto)
     {
-        await commands.UpdateAsync(dto);
+        var userIdClaim = GetUserIdClaim();
+        if (userIdClaim is null)
+        {
+            throw new Exception("401. Unauthorized");
+        }
+
+        await commands.UpdateAsync(dto, userIdClaim.Value);
     }
 
     [HttpDelete]
-    [Route("[action]")]
+    [Authorize]
     public async Task Delete(long id)
     {
-        await commands.DeleteAsync(id);
+        var userIdClaim = GetUserIdClaim();
+        if (userIdClaim is null)
+        {
+            throw new Exception("401. Unauthorized");
+        }
+        await commands.DeleteAsync(id, userIdClaim.Value);
     }
 
     [HttpGet]
-    [Route("[action]")]
+    [Authorize]
     public async Task<GetVm> Get(long id)
     {
-        return await queries.GetAsync(id);
+        var userIdClaim = GetUserIdClaim();
+        if (userIdClaim is null)
+        {
+            throw new Exception("401. Unauthorized");
+        }
+
+        return await queries.GetAsync(id, userIdClaim.Value);
     }
 
     [HttpGet]
-    [Route("[action]")]
+    [Authorize]
     public async Task<List<GetVm>> GetList()
     {
-        return await queries.GetList();
+        var userIdClaim = GetUserIdClaim();
+        if (userIdClaim is null)
+        {
+            return Enumerable.Empty<GetVm>().ToList();
+        }
+
+        return await queries.GetList(userIdClaim.Value);
     }
-    
-    [AllowAnonymous]
+
     [HttpGet]
-    [Route("[action]")]
     public async Task<string> GetFullLink(string token)
     {
         return await queries.GetFullLink(token);
+    }
+
+    private Claim? GetUserIdClaim()
+    {
+        return User.Claims.FirstOrDefault(x => x.Type == configuration["Jwt:UserIdPropName"]);
     }
 }

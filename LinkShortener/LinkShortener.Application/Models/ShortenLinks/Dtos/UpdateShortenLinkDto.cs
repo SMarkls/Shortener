@@ -9,7 +9,7 @@ public class UpdateShortenLinkDto : IMapTo<ShortenLink>
     /// Идентификатор сущности.
     /// </summary>
     public long Id { get; set; }
-    
+
     /// <summary>
     /// Полная ссылка.
     /// </summary>

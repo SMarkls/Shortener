@@ -12,17 +12,17 @@ public class ShortenLinkVm : IMapFrom<ShortenLink>
     /// Идентификатор ссылки.
     /// </summary>
     public long Id { get; set; }
-    
+
     /// <summary>
     /// Короткий токен ссылки.
     /// </summary>
     public string Token { get; set; }
-    
+
     /// <summary>
     /// Полная ссылка.
     /// </summary>
     public string FullLink { get; set; }
-    
+
     /// <summary>
     /// Количество переходов по ссылке.
     /// </summary>

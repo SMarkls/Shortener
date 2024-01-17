@@ -9,12 +9,12 @@ public class RegisterDto
     /// Ник.
     /// </summary>
     public string NickName { get; set; }
-    
+
     /// <summary>
     /// Пароль.
     /// </summary>
     public string Password { get; set; }
-    
+
     /// <summary>
     /// Подтверждение пароля.
     /// </summary>

@@ -1,10 +1,11 @@
 ﻿using System.Net;
+using LinkShortener.Application.Common.Exceptions.Common;
 
 namespace LinkShortener.Application.Common.Exceptions;
 
-public class AccessDeniedException : Exception
+public class AccessDeniedException : ApiException
 {
-    public static int Code => (int)HttpStatusCode.NotAcceptable;
+    public override int Code => (int)HttpStatusCode.NotAcceptable;
 
     public AccessDeniedException() : base("У вас нет доступа к данному ресурсу.")
     {

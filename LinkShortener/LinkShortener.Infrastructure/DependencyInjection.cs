@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using LinkShortener.Application.Common;
 using LinkShortener.Application.Common.Services;
-using LinkShortener.Domain.Indetity.Entities;
+using LinkShortener.Domain.Identity.Entities;
 using LinkShortener.Infrastructure.Persistence;
 using LinkShortener.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
@@ -14,13 +14,13 @@ namespace LinkShortener.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IIdentityTokenService, IdentityTokenService>();
         services.AddTransient<IAuthService, AuthService>();
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
-        services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
+        services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
         var tokenValidationParametres = new TokenValidationParameters
         {
             ClockSkew = TimeSpan.Zero,
@@ -30,9 +30,8 @@ public static class DependencyInjection
             ValidateIssuerSigningKey = true,
             ValidIssuer = configuration["Jwt:Issuer"],
             ValidAudience = configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"] ?? throw new Exception("Jwt Key not found in config file")))
         };
-        services.AddSingleton(tokenValidationParametres);
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
@@ -49,6 +48,5 @@ public static class DependencyInjection
                 options.Password.RequireUppercase = false;
             })
             .AddEntityFrameworkStores<ApplicationDbContext>();
-        return services;
     }
 }
