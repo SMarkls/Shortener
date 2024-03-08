@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using StackExchange.Redis;
 
 namespace LinkShortener.Infrastructure;
 
@@ -48,5 +49,19 @@ public static class DependencyInjection
                 options.Password.RequireUppercase = false;
             })
             .AddEntityFrameworkStores<ApplicationDbContext>();
+
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.InstanceName = "shortener_";
+            options.ConfigurationOptions = new ConfigurationOptions
+            {
+                EndPoints = { {configuration["Redis:RedisServer"], int.Parse(configuration["Redis:RedisPort"])} },
+                ConnectRetry = 5,
+                ReconnectRetryPolicy = new LinearRetry(1500),
+                ConnectTimeout = 5000,
+                SyncTimeout = 0,
+                DefaultDatabase = 0
+            };
+        });
     }
 }

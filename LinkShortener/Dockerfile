@@ -1,7 +1,6 @@
-FROM mcr.microsoft.com/dotnet/sdk:7.0.306-alpine3.18-amd64 AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:7.0.306 AS build-env
 WORKDIR /src
-EXPOSE 80
-EXPOSE 443
+EXPOSE 5129
 
 COPY LinkShortener.Api/LinkShortener.Api.csproj ./LinkShortener.Api/
 COPY LinkShortener.Domain/LinkShortener.Domain.csproj ./LinkShortener.Domain/
@@ -13,7 +12,7 @@ COPY . ./
 
 RUN dotnet publish LinkShortener.Api/LinkShortener.Api.csproj -c Release -o out
 
-FROM mcr.microsoft.com/dotnet/aspnet:7.0.9-alpine3.18-arm64v8
+FROM mcr.microsoft.com/dotnet/aspnet:7.0.9
 WORKDIR /src
 COPY --from=build-env /src/out .
 ENTRYPOINT [ "dotnet", "LinkShortener.Api.dll" ]

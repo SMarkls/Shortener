@@ -3,18 +3,19 @@ services:
   server:
     build: LinkShortener/
     ports:
-      - 443:80
+      - 5129:5129
     depends_on:
       - db
-    environment:
-      - ConnectionStrings__DefaultConnection=User ID=postgres;Password=postgres;Server=db;Port=5432;Database=Shortener;IntegratedSecurity=true;Pooling=true
+      - redis
+    container_name: server
   client:
     build:
       context: app/
     ports:
       - 3000:80
+    container_name: client
   db:
-    image: postgres:15.3-alpine3.18
+    image: postgres:15.3
     container_name: db
     environment:
       - POSTGRES_USER=postgres
@@ -23,3 +24,9 @@ services:
     ports:
       - 5432:5432
     restart: always
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    ports:
+      - 6379:6379

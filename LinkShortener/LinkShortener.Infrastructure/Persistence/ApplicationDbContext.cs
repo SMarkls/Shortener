@@ -8,7 +8,6 @@ namespace LinkShortener.Infrastructure.Persistence;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext
 {
-    public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<ShortenLink> Links { get; set; }
     public Task<int> SaveChangesAsync()
     {
@@ -17,6 +16,5 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
 
     public ApplicationDbContext(DbContextOptions options) : base(options)
     {
-
     }
 }

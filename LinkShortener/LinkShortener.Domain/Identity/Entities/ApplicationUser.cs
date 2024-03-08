@@ -9,6 +9,4 @@ public class ApplicationUser : IdentityUser
     /// Навигационное свойство - сокращенные ссылки.
     /// </summary>
     public List<ShortenLink> ShortenLinks { get; }
-
-    public RefreshToken RefreshToken { get; set; }
 }

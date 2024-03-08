@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using LinkShortener.Application.Common;
 using LinkShortener.Application.Common.Exceptions;
 using LinkShortener.Application.Common.Services;
@@ -10,6 +11,7 @@ using LinkShortener.Application.Models.Identity.Dtos;
 using LinkShortener.Application.Models.Identity.ViewModels;
 using LinkShortener.Domain.Identity.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -17,16 +19,20 @@ namespace LinkShortener.Infrastructure.Services;
 
 public class IdentityTokenService : IIdentityTokenService
 {
-    private readonly IConfiguration configuration;
-    private readonly TokenValidationParameters validationParameters;
-    private readonly IApplicationDbContext context;
-    private const int expirationMinutes = 30;
+    private static TokenValidationParameters? validationParameters;
+    private static string? propName;
+    private static string? issuer;
+    private static string? audience;
+    private static int? expirationMinutes;
 
-    public IdentityTokenService(IConfiguration configuration, IApplicationDbContext context)
+    private readonly IApplicationDbContext context;
+    private readonly IDistributedCache cache;
+    
+    public IdentityTokenService(IConfiguration configuration, IApplicationDbContext context, IDistributedCache cache)
     {
-        this.configuration = configuration;
         this.context = context;
-        validationParameters = new TokenValidationParameters
+        this.cache = cache;
+        validationParameters ??= new TokenValidationParameters
         {
             ClockSkew = TimeSpan.Zero,
             ValidateIssuer = true,
@@ -37,19 +43,24 @@ public class IdentityTokenService : IIdentityTokenService
             ValidAudience = configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
         };
+
+        propName ??= configuration["Jwt:UserIdPropName"];
+        issuer ??= configuration["Jwt:Issuer"];
+        audience ??= configuration["Jwt:Audience"];
+        expirationMinutes ??= int.Parse(configuration["Jwt:MinutesLifeTime"]);
     }
 
     public async Task<AuthVm> GenerateTokenAsync(ApplicationUser user)
     {
-        var symmetricKey = validationParameters.IssuerSigningKey;
+        var symmetricKey = validationParameters!.IssuerSigningKey;
         var signingCredentials = new SigningCredentials(symmetricKey, SecurityAlgorithms.HmacSha256);
         var claims = CreateClaims(user);
 
         var token = new JwtSecurityToken(
-            issuer: configuration["Jwt:Issuer"],
-            audience: configuration["Jwt:Audience"],
+            issuer: issuer,
+            audience: audience,
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(expirationMinutes),
+            expires: DateTime.UtcNow.AddMinutes(expirationMinutes!.Value),
             signingCredentials: signingCredentials
         );
 
@@ -57,20 +68,9 @@ public class IdentityTokenService : IIdentityTokenService
         {
             Token = GenerateRefreshToken(),
             JwtId = token.Id,
-            User = user,
-            CreatedAt = DateTime.Now.ToUniversalTime(),
-            Used = false,
-            ExpirationTime = DateTime.Now.AddDays(10).ToUniversalTime()
         };
 
-        var oldRefreshToken = await context.RefreshTokens.FirstOrDefaultAsync(x => x.UserId == user.Id);
-        if (oldRefreshToken is not null)
-        {
-            context.RefreshTokens.Remove(oldRefreshToken);
-        }
-
-        await context.RefreshTokens.AddAsync(refreshToken);
-        await context.SaveChangesAsync();
+        await cache.SetStringAsync(user.Id, JsonSerializer.Serialize(refreshToken), new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)});
         return new AuthVm
         {
             AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
@@ -82,10 +82,10 @@ public class IdentityTokenService : IIdentityTokenService
     {
         var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)),
-            new Claim(this.configuration["Jwt:UserIdPropName"], user.Id)
+            new (JwtRegisteredClaimNames.Sub, user.UserName),
+            new (JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new (JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)),
+            new (propName!, user.Id)
         };
         return claims;
     }
@@ -99,27 +99,43 @@ public class IdentityTokenService : IIdentityTokenService
 
     public async Task<AuthVm> RefreshTokenAsync(RefreshTokenDto dto)
     {
-        var claims = GetClaimsFromToken(dto.AccessToken);
-        var refreshToken = await context.RefreshTokens.Include(i => i.User)
-            .FirstOrDefaultAsync(x => x.Token == dto.RefreshToken);
-
-        if (refreshToken is null)
-        {
-            throw new InvalidLoginCredentialsException();
-        }
-
+        var claims = GetClaimsFromToken(dto.AccessToken).ToList();
         var jwtId = claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti);
         if (jwtId is null)
         {
             throw new InvalidLoginCredentialsException();
         }
 
-        if (jwtId.Value == refreshToken.JwtId)
+        var userId = claims.FirstOrDefault(x => x.Type == propName)?.Value;
+        if (string.IsNullOrEmpty(userId))
         {
-            return await GenerateTokenAsync(refreshToken.User);
+            throw new InvalidLoginCredentialsException();
         }
 
-        throw new InvalidLoginCredentialsException();
+        var user = await context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+        if (user is null)
+        {
+            throw new InvalidLoginCredentialsException();
+        }
+
+        var refreshJson = await cache.GetStringAsync(userId);
+        if (string.IsNullOrEmpty(refreshJson))
+        {
+            throw new InvalidLoginCredentialsException();
+        }
+
+        var refreshToken = JsonSerializer.Deserialize<RefreshToken>(refreshJson);
+        if (refreshToken == default)
+        {
+            throw new InvalidLoginCredentialsException();
+        }
+
+        if (jwtId.Value != refreshToken.JwtId)
+        {
+            throw new InvalidLoginCredentialsException();
+        }
+
+        return await GenerateTokenAsync(user);
     }
 
     private IEnumerable<Claim> GetClaimsFromToken(string token)
