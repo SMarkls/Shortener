@@ -8,5 +8,6 @@ public interface IApplicationDbContext
 {
     DbSet<ApplicationUser> Users { get; set; }
     DbSet<ShortenLink> Links { get; set; }
+    DbSet<Statistic> Statistics { get; set; }
     Task<int> SaveChangesAsync();
 }

@@ -50,12 +50,17 @@ public static class DependencyInjection
             })
             .AddEntityFrameworkStores<ApplicationDbContext>();
 
+        services.AddRedis(configuration);
+    }
+
+    private static void AddRedis(this IServiceCollection services, IConfiguration configuration)
+    {
         services.AddStackExchangeRedisCache(options =>
         {
             options.InstanceName = "shortener_";
             options.ConfigurationOptions = new ConfigurationOptions
             {
-                EndPoints = { {configuration["Redis:RedisServer"], int.Parse(configuration["Redis:RedisPort"])} },
+                EndPoints = { { configuration["Redis:RedisServer"], int.Parse(configuration["Redis:RedisPort"]) } },
                 ConnectRetry = 5,
                 ReconnectRetryPolicy = new LinearRetry(1500),
                 ConnectTimeout = 5000,

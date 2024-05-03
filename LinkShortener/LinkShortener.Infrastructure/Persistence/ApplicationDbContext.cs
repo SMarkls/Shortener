@@ -9,6 +9,8 @@ namespace LinkShortener.Infrastructure.Persistence;
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext
 {
     public DbSet<ShortenLink> Links { get; set; }
+    public DbSet<Statistic> Statistics { get; set; }
+
     public Task<int> SaveChangesAsync()
     {
         return base.SaveChangesAsync();
@@ -16,5 +18,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
 
     public ApplicationDbContext(DbContextOptions options) : base(options)
     {
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     }
 }

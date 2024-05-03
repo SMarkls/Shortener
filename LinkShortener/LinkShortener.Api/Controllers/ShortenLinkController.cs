@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using LinkShortener.Application.Work.ShortenLinks.Interfaces;
+using LinkShortener.Application.Work.Statistics.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CreateDto = LinkShortener.Application.Models.ShortenLinks.Dtos.CreateShortenLinkDto;
@@ -15,12 +16,14 @@ public class ShortenLinkController : Controller
     private readonly IShortenLinksCommands commands;
     private readonly IShortenLinksQueries queries;
     private readonly IConfiguration configuration;
+    private readonly IStatisticsCommands statisticsCommands;
 
-    public ShortenLinkController(IShortenLinksCommands commands, IShortenLinksQueries queries, IConfiguration configuration)
+    public ShortenLinkController(IShortenLinksCommands commands, IShortenLinksQueries queries, IConfiguration configuration, IStatisticsCommands statisticsCommands)
     {
         this.commands = commands;
         this.queries = queries;
         this.configuration = configuration;
+        this.statisticsCommands = statisticsCommands;
     }
 
     [HttpPost]
@@ -84,7 +87,9 @@ public class ShortenLinkController : Controller
     [HttpGet]
     public async Task<string> GetFullLink(string token)
     {
-        return await queries.GetFullLink(token);
+        await statisticsCommands.CreateAsync(HttpContext, token);
+        var fullLink = await queries.GetFullLink(token);
+        return fullLink;
     }
 
     private Claim? GetUserIdClaim()

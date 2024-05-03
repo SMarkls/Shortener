@@ -27,7 +27,7 @@ public class IdentityTokenService : IIdentityTokenService
 
     private readonly IApplicationDbContext context;
     private readonly IDistributedCache cache;
-    
+
     public IdentityTokenService(IConfiguration configuration, IApplicationDbContext context, IDistributedCache cache)
     {
         this.context = context;
@@ -70,7 +70,7 @@ public class IdentityTokenService : IIdentityTokenService
             JwtId = token.Id,
         };
 
-        await cache.SetStringAsync(user.Id, JsonSerializer.Serialize(refreshToken), new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)});
+        await cache.SetStringAsync(user.Id, JsonSerializer.Serialize(refreshToken), new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10) });
         return new AuthVm
         {
             AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
