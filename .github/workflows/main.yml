@@ -7,7 +7,8 @@ on:
     branches:
       - master
 jobs:
-  format:
+  format-dotnet:
+    if: ${{ contains(github.event.head_commit.modified, 'LinkShortener/') }}
     runs-on: ubuntu-latest
     steps:
       - name: 'Set up .NET'
