@@ -13,6 +13,6 @@ jobs:
       - name: 'Set up .NET'
         uses: docker://mcr.microsoft.com/dotnet/sdk:7.0
       - name: 'Move to backend folder'
-        run: ls & cd LinkShortener
+        run: ls
       - name: 'Check Format'
         run: dotnet format -v diag --verify-no-changes
