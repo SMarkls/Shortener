@@ -1,0 +1,16 @@
+name: Shortener
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Set up .NET'
+        uses: docker://dotnet/sdk:7.0
+      - name: 'Check Format'
+        run: dotnet format -v diag --verify-no-changes
