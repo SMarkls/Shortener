@@ -4,12 +4,12 @@ on:
     branches:
       - master
     paths:
-      - '*LinkShortener/*'
+      - '**LinkShortener/**'
   pull_request:
     branches:
       - master
     paths:
-      - '*LinkShortener/*'
+      - '**LinkShortener/**'
 
 jobs:
   format-dotnet:
