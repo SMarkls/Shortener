@@ -38,6 +38,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 builder.Services.AddSession();
 builder.Services.AddDistributedMemoryCache();
+
 builder.Services.AddCors();
 
 var app = builder.Build();
