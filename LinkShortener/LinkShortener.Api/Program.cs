@@ -1,8 +1,8 @@
-
 using LinkShortener.Api.Middleware;
 using LinkShortener.Application;
 using LinkShortener.Infrastructure;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddTransient<ExceptionHandlerMiddleware>();
@@ -45,6 +45,7 @@ app.UseCors(policyBuilder => policyBuilder
     .AllowAnyOrigin()
     .AllowAnyHeader()
     .AllowAnyMethod());
+app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 // Configure the HTTP request pipeline.

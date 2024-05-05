@@ -9,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Serilog;
+using Serilog.Events;
 using StackExchange.Redis;
 
 namespace LinkShortener.Infrastructure;
@@ -51,6 +53,7 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<ApplicationDbContext>();
 
         services.AddRedis(configuration);
+        services.ConfigureSerilog(configuration);
     }
 
     private static void AddRedis(this IServiceCollection services, IConfiguration configuration)
@@ -60,7 +63,7 @@ public static class DependencyInjection
             options.InstanceName = "shortener_";
             options.ConfigurationOptions = new ConfigurationOptions
             {
-                EndPoints = { { configuration["Redis:RedisServer"], int.Parse(configuration["Redis:RedisPort"]) } },
+                EndPoints = { configuration.GetConnectionString("Redis") ?? throw new Exception("No redis connection string") },
                 ConnectRetry = 5,
                 ReconnectRetryPolicy = new LinearRetry(1500),
                 ConnectTimeout = 5000,
@@ -68,5 +71,24 @@ public static class DependencyInjection
                 DefaultDatabase = 0
             };
         });
+    }
+
+    private static void ConfigureSerilog(this IServiceCollection services, IConfiguration configuration)
+    {
+        var consoleLogLevel = Enum.Parse(typeof(LogEventLevel), configuration["Serilog:LogEventLevel:Console"]) is LogEventLevel consoleLevel
+            ? consoleLevel
+            : throw new Exception("No console loglevel in configuration");
+
+        var fileLogLevel = Enum.Parse(typeof(LogEventLevel), configuration["Serilog:LogEventLevel:File"]) is LogEventLevel fileLevel
+            ? fileLevel
+            : throw new Exception("No file loglevel in configuration");
+
+        var template = configuration["Serilog:Template"] ?? throw new Exception("No logging template");
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.Console(consoleLogLevel, template)
+            .WriteTo.File(configuration["Serilog:FileNameTemplate"], rollingInterval: RollingInterval.Day, restrictedToMinimumLevel: fileLogLevel, outputTemplate: template)
+            .CreateLogger();
+
+        services.AddSerilog(Log.Logger);
     }
 }
