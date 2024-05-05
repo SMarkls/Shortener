@@ -3,12 +3,16 @@ on:
   push:
     branches:
       - master
+    paths:
+      - '**LinkShortener/**'
   pull_request:
     branches:
       - master
+    paths:
+      - '**LinkShortener/**'
+
 jobs:
   format-dotnet:
-    if: ${{ contains(github.event.head_commit.modified, 'LinkShortener/') }}
     runs-on: ubuntu-latest
     steps:
       - name: 'Set up .NET'
