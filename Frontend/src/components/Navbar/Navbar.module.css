@@ -1,0 +1,38 @@
+.navbar {
+  display: flex;
+  justify-content: space-around;
+  width: 90%;
+}
+
+.navbar image {
+  height: 1rem;
+}
+
+.user-name {
+  font-size: var(--additional-font-size);
+}
+
+.logo {
+  height: 30vh;
+}
+
+@media (max-width: 575px), (orientation: portrait) {
+  .navbar {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .navbar > a > img {
+    width: 30vw;
+    height: auto;
+  }
+
+  .navbar > div {
+    justify-content: flex-end;
+    width: 100%;
+  }
+
+  .navbar > div > img {
+    height: 1rem;
+  }
+}

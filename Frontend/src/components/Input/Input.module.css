@@ -1,0 +1,24 @@
+.input {
+  border-radius: 2vw;
+  border: 2px solid var(--text-color);
+  width: 80vw;
+  padding: 1vw;
+}
+
+@media (min-width: 576px) {
+  .input {
+    width: 66%;
+  }
+}
+
+@media (min-width: 1200px) {
+  .input {
+    width: 60%;
+  }
+}
+
+@media (min-width: 1400px) {
+  .input {
+    width: 52%;
+  }
+}

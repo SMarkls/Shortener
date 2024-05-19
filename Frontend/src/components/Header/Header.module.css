@@ -1,0 +1,4 @@
+.header {
+  font-size: var(--header-font-size);
+  color: var(--text-color);
+}

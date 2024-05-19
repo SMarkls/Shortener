@@ -1,0 +1,29 @@
+.drop-down {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  padding-block: 1vw;
+  padding-inline: 1vw;
+  border: 2px solid var(--text-color);
+  border-radius: 2vw;
+  width: 50vw;
+  gap: 1vw;
+  font-size: var(--additional-font-size);
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 2vw;
+}
+
+.qr svg {
+  fill: none;
+  stroke: none;
+}
+
+.qr svg:hover {
+  fill: none;
+  stroke: none;
+}
