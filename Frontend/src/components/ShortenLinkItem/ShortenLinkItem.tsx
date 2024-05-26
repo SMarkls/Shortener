@@ -3,6 +3,7 @@ import style from './ShortenLinkItem.module.css';
 import { BinIconIcon } from '../Icons/BinIcon';
 import { InfoIcon } from '../Icons/InfoIcon';
 import { deleteShortenLink } from '../../utils/api/shortenLink';
+import { Link } from 'react-router-dom';
 
 type ShortenLinkItemProps = {
   token: string;
@@ -33,7 +34,9 @@ export const ShortenLinkItem = ({ token, fulllUrl, countRedirections, id, cb }: 
       <div>{fulllUrl}</div>
       <div>{countRedirections}</div>
       <div className={style.icons}>
-        <InfoIcon />
+        <Link to={`/info?token=${token}&fullUrl=${fulllUrl}&id=${id}`}>
+          <InfoIcon />
+        </Link>
         <BinIconIcon onClick={onDeleteClicked} />
       </div>
     </div>

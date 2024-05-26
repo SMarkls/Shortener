@@ -5,6 +5,7 @@ import { createBrowserRouter, Params, redirect, RouterProvider } from 'react-rou
 import { Layout } from './views/Layout';
 import { AuthPage } from './views/AuthPage';
 import { getFullLink } from './utils/api/shortenLink';
+import { LinkPage } from './views/LinkPage';
 
 export const App = (): ReactElement => {
   const router = createBrowserRouter([
@@ -19,6 +20,10 @@ export const App = (): ReactElement => {
         {
           path: '/auth',
           element: <AuthPage />,
+        },
+        {
+          path: '/info',
+          element: <LinkPage />,
         },
       ],
     },

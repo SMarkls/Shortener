@@ -26,6 +26,10 @@ export const getFullLink = async (token: string) => {
   return await instance.get(`/shortenLink/getFullLink?token=${token}`);
 };
 
+export const getStatistics = async (token: string) => {
+  return await instance.get(`/statistics/getStatistics?shortenLinkId=${token}`);
+};
+
 const configureHeaders = () => {
   let accessToken = useIdentity.getState().accessToken;
   let refreshToken = useIdentity.getState().refreshToken;
