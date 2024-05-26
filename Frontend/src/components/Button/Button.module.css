@@ -1,0 +1,11 @@
+.btn {
+  border: 2px solid var(--text-color);
+  border-radius: 2vw;
+  padding: 0.5vw;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn:hover {
+  color: var(--background-color);
+  background-color: var(--text-color);
+}

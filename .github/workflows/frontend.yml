@@ -1,0 +1,29 @@
+name: Frontend
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - '**Frontend/**'
+  pull_request:
+    branches:
+      - master
+    paths:
+      - '**Frontend/**'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 18
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+      - name: Install node.js dependencies
+        working-directory: ./Frontend
+        run: npm install
+      - name: Run Linters
+        working-directory: ./Frontend
+        run: npm run lint

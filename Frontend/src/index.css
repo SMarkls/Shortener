@@ -1,0 +1,52 @@
+* {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-size: 9pt;
+  font-family: sans-serif;
+  --additional-font-size: 0.81rem;
+  --header-font-size: 1.5rem;
+  --background-color: #d9d9d9;
+  --additional-color: #8a8a8a;
+  --text-color: #545454;
+  --icon-hover-color: #8f68bf;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+.hoverable-icon {
+  stroke: var(--text-color);
+}
+.hoverable-icon:hover {
+  stroke: var(--icon-hover-color);
+}
+
+@media (min-width: 576px) {
+  * {
+    font-size: 14pt;
+  }
+}
+
+@media (min-width: 768px) {
+  * {
+    font-size: 19pt;
+  }
+}
+
+@media (min-width: 992px) {
+  * {
+    font-size: 24pt;
+  }
+}
+
+@media (min-width: 1200px) {
+  * {
+    font-size: 27pt;
+  }
+}
+
+@media (min-width: 1400px) {
+  * {
+    font-size: 30pt;
+  }
+}

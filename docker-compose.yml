@@ -9,10 +9,9 @@ services:
       - redis
     container_name: server
   client:
-    build:
-      context: app/
+    build: Frontend/
     ports:
-      - "3000:80"
+      - "8080:8080"
     container_name: client
   db:
     image: postgres:15.3

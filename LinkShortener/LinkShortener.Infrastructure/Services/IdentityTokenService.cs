@@ -84,7 +84,7 @@ public class IdentityTokenService : IIdentityTokenService
         {
             new (JwtRegisteredClaimNames.Sub, user.UserName),
             new (JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new (JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)),
+            new (JwtRegisteredClaimNames.Iat, DateTimeOffset.Now.ToUnixTimeSeconds().ToString()),
             new (propName!, user.Id)
         };
         return claims;
