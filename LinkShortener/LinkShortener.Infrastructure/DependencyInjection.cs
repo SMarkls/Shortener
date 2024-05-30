@@ -1,14 +1,17 @@
 ﻿using System.Text;
 using LinkShortener.Application.Common;
 using LinkShortener.Application.Common.Services;
+using LinkShortener.Application.Work.Statistics.Interfaces;
 using LinkShortener.Domain.Identity.Entities;
 using LinkShortener.Infrastructure.Persistence;
 using LinkShortener.Infrastructure.Services;
+using LinkShortener.Infrastructure.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using RabbitMQ.Client;
 using Serilog;
 using Serilog.Events;
 using StackExchange.Redis;
@@ -90,5 +93,30 @@ public static class DependencyInjection
             .CreateLogger();
 
         services.AddSerilog(Log.Logger);
+        services.ConfigureRabbitMq(configuration);
+    }
+
+    private static void ConfigureRabbitMq(this IServiceCollection services, IConfiguration configuration)
+    {
+        var connectionFactory = new ConnectionFactory
+        {
+            Password = configuration["RabbitMq:Password"],
+            HostName = configuration["RabbitMq:Hostname"],
+            UserName = configuration["RabbitMq:User"],
+            Port = Convert.ToInt32(configuration["RabbitMq:Port"]),
+            AutomaticRecoveryEnabled = true,
+            DispatchConsumersAsync = true
+        };
+
+        services.AddSingleton(connectionFactory);
+        services.AddSingleton<RabbitMqChannelManager>();
+        services.AddSingleton<IRabbitMqService, RabbitMqService>();
+        using var connection = connectionFactory.CreateConnectionAsync().Result;
+        using var channel = connection.CreateChannelAsync().Result;
+        var queueName = channel.QueueDeclareAsync("statistics_queue", true, false, false).Result.QueueName;
+        channel.ExchangeDeclareAsync("statistics", "direct", true, false).Wait();
+        channel.QueueBindAsync(queue: queueName, exchange: "statistics", routingKey: string.Empty);
+
+        channel.QueueDeclareAsync("rpc_get_statistic", true, false, false).Wait();
     }
 }

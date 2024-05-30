@@ -1,15 +1,15 @@
-name: Backend
+name: Statistic_service
 on:
   push:
     branches:
       - master
     paths:
-      - '**LinkShortener/**'
+      - '**StatisticService/**'
   pull_request:
     branches:
       - master
     paths:
-      - '**LinkShortener/**'
+      - '**StatisticService/**'
 
 jobs:
   format-dotnet:
@@ -20,7 +20,7 @@ jobs:
       - name: 'Checkout'
         uses: actions/checkout@v3
       - name: 'Check Format'
-        run: dotnet format LinkShortener -v diag --verify-no-changes
+        run: dotnet format StatisticService/StatisticService.sln -v diag --verify-no-changes
   build:
     runs-on: ubuntu-latest
     steps:
@@ -29,4 +29,4 @@ jobs:
       - name: 'Checkout'
         uses: actions/checkout@v3
       - name: 'Check Format'
-        run: dotnet build LinkShortener
+        run: dotnet build StatisticService/StatisticService.sln

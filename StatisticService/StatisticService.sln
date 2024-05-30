@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatisticService", "StatisticService.csproj", "{82D1A5D3-3769-418D-AB1D-F1DAD4AD1406}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{82D1A5D3-3769-418D-AB1D-F1DAD4AD1406}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82D1A5D3-3769-418D-AB1D-F1DAD4AD1406}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82D1A5D3-3769-418D-AB1D-F1DAD4AD1406}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82D1A5D3-3769-418D-AB1D-F1DAD4AD1406}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

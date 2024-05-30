@@ -3,6 +3,7 @@ using LinkShortener.Application.Work.ShortenLinks.Interfaces;
 using LinkShortener.Application.Work.Statistics.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using CreateDto = LinkShortener.Application.Models.ShortenLinks.Dtos.CreateShortenLinkDto;
 using UpdateDto = LinkShortener.Application.Models.ShortenLinks.Dtos.UpdateShortenLinkDto;
 using GetVm = LinkShortener.Application.Models.ShortenLinks.ViewModels.ShortenLinkVm;
@@ -87,8 +88,17 @@ public class ShortenLinkController : Controller
     [HttpGet]
     public async Task<string> GetFullLink(string token)
     {
-        await statisticsCommands.CreateAsync(HttpContext, token);
+        var statisticsSendTask = statisticsCommands.CreateAsync(HttpContext, token);
         var fullLink = await queries.GetFullLink(token);
+        try
+        {
+            await statisticsSendTask;
+        }
+        catch (Exception e)
+        {
+            Log.Error(e, "Exception: ");
+        }
+
         return fullLink;
     }
 

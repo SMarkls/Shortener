@@ -9,7 +9,6 @@ namespace LinkShortener.Infrastructure.Persistence;
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext
 {
     public DbSet<ShortenLink> Links { get; set; }
-    public DbSet<Statistic> Statistics { get; set; }
 
     public Task<int> SaveChangesAsync()
     {
