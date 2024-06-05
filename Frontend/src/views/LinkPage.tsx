@@ -13,17 +13,16 @@ export const LinkPage = (): ReactElement => {
   const searchParams = useSearchParams()[0];
   const token = searchParams.get('token');
   const fullUrl = searchParams.get('fullUrl');
-  const id = searchParams.get('id');
 
   const [statistics, setStatistics] = useState<StatisticData>();
 
   useEffect(() => {
     const fetchStatistics = async () => {
-      if (!id) {
+      if (!token) {
         return (window.location.href = '/');
       }
 
-      const data = await getStatistics(id);
+      const data = await getStatistics(token);
       if (data.status !== 200) {
         return (window.location.href = '/');
       }
@@ -32,7 +31,7 @@ export const LinkPage = (): ReactElement => {
     };
 
     fetchStatistics();
-  }, [id]);
+  }, [token]);
 
   return (
     <>

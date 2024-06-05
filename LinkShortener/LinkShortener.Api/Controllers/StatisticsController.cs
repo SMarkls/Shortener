@@ -16,8 +16,8 @@ public class StatisticsController : Controller
     }
 
     [HttpGet]
-    public async Task<StatisticVM> GetStatistics(int shortenLinkId)
+    public async Task<StatisticVM> GetStatistics(string token)
     {
-        return await statisticsQueries.GetStatisticsAsync(shortenLinkId);
+        return await statisticsQueries.GetStatisticsAsync(token);
     }
 }

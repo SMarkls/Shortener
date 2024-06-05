@@ -4,5 +4,5 @@ namespace LinkShortener.Application.Work.Statistics.Interfaces;
 
 public interface IStatisticsCommands
 {
-    Task<long> CreateAsync(HttpContext httpContext, string token);
+    Task CreateAsync(HttpContext httpContext, string token);
 }

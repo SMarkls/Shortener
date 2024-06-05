@@ -27,3 +27,18 @@ jobs:
       - name: Run Linters
         working-directory: ./Frontend
         run: npm run lint
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 18
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+      - name: Install node.js dependencies
+        working-directory: ./Frontend
+        run: npm install
+      - name: Build
+        working-directory: ./Frontend
+        run: npm run build

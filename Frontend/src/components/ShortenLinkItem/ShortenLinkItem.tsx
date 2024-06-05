@@ -34,7 +34,7 @@ export const ShortenLinkItem = ({ token, fulllUrl, countRedirections, id, cb }: 
       <div>{fulllUrl}</div>
       <div>{countRedirections}</div>
       <div className={style.icons}>
-        <Link to={`/info?token=${token}&fullUrl=${fulllUrl}&id=${id}`}>
+        <Link to={`/info?token=${token}&fullUrl=${fulllUrl}`}>
           <InfoIcon />
         </Link>
         <BinIconIcon onClick={onDeleteClicked} />

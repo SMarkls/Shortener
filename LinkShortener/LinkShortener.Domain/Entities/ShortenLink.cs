@@ -27,9 +27,4 @@ public class ShortenLink : BaseEntity
     /// Наивагационное свойство - создатель ссылки.
     /// </summary>
     public ApplicationUser? Owner { get; init; }
-
-    /// <summary>
-    /// Навигационное свойство - статистики переходв по ссылке.
-    /// </summary>
-    public IList<Statistic> Statistics { get; init; } = new List<Statistic>();
 }

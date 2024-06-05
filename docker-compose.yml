@@ -7,6 +7,7 @@ services:
     depends_on:
       - db
       - redis
+      - rabbitmq
     container_name: server
   client:
     build: Frontend/
@@ -29,3 +30,23 @@ services:
     restart: always
     ports:
       - "6379:6379"
+  rabbitmq:
+    image: rabbitmq:3.13.2-management
+    container_name: rabbitmq
+    restart: always
+    ports: 
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbit
+      - RABBITMQ_DEFAULT_PASS=rabbit
+  statistics_db:
+    image: postgres:15.3
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=Shortener_Statistics
+    restart: always
+    ports:
+      - "5434:5432"
+    container_name: statistics_db
