@@ -33,7 +33,6 @@ public class UserController
     }
 
     [HttpPost]
-    [Route("[action]")]
     public async Task<AuthVm> RefreshToken([FromBody] RefreshTokenDto dto)
     {
         var authVm = await tokenService.RefreshTokenAsync(dto);

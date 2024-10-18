@@ -27,7 +27,7 @@ public class ShortenLinksCommands : IShortenLinksCommands
         string token;
         do
         {
-            token = Convert.ToBase64String(Encoding.UTF8.GetBytes(Guid.NewGuid().ToString())).Remove(6).ToLower();
+            token = GenerateRandomString();
         } while (context.Links.Any(x => x.Token == token));
 
         var entity = new ShortenLink { Token = token, FullLink = dto.FullLink, Owner = owner, CountOfRedirections = 0 };
@@ -36,6 +36,8 @@ public class ShortenLinksCommands : IShortenLinksCommands
 
         return entity.Token;
     }
+
+    private static string GenerateRandomString() => Convert.ToBase64String(Encoding.UTF8.GetBytes(Guid.NewGuid().ToString())).Remove(6).ToLower();
 
     public async Task UpdateAsync(UpdateShortenLinkDto dto, string userId)
     {

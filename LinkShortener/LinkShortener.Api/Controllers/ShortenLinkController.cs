@@ -10,7 +10,7 @@ using GetVm = LinkShortener.Application.Models.ShortenLinks.ViewModels.ShortenLi
 namespace LinkShortener.Api.Controllers;
 
 [ApiController]
-[Route("[controller]/[action]")]
+[Route("[controller]")]
 public class ShortenLinkController : Controller
 {
     private readonly IShortenLinksCommands commands;
@@ -18,7 +18,11 @@ public class ShortenLinkController : Controller
     private readonly IConfiguration configuration;
     private readonly IStatisticsCommands statisticsCommands;
 
-    public ShortenLinkController(IShortenLinksCommands commands, IShortenLinksQueries queries, IConfiguration configuration, IStatisticsCommands statisticsCommands)
+    public ShortenLinkController(
+        IShortenLinksCommands commands,
+        IShortenLinksQueries queries,
+        IConfiguration configuration,
+        IStatisticsCommands statisticsCommands)
     {
         this.commands = commands;
         this.queries = queries;
@@ -58,7 +62,7 @@ public class ShortenLinkController : Controller
         await commands.DeleteAsync(id, userIdClaim.Value);
     }
 
-    [HttpGet]
+    [HttpGet("{id:long}")]
     [Authorize]
     public async Task<GetVm> Get(long id)
     {
@@ -85,6 +89,8 @@ public class ShortenLinkController : Controller
     }
 
     [HttpGet]
+    [AllowAnonymous]
+    [Route("{token:alpha}")]
     public async Task<string> GetFullLink(string token)
     {
         await statisticsCommands.CreateAsync(HttpContext, token);

@@ -5,7 +5,7 @@ namespace LinkShortener.Application.Common.Exceptions;
 
 public class InvalidLoginCredentialsException : ApiException
 {
-    public override int Code => (int)HttpStatusCode.Forbidden;
+    public override int Code => (int)HttpStatusCode.Unauthorized;
 
     public InvalidLoginCredentialsException() : base($"Неверные данные для входа")
     {

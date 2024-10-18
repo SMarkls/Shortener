@@ -22,7 +22,7 @@ public class ExceptionHandlerMiddleware : IMiddleware
         {
             context.Response.Clear();
             context.Response.ContentType = "text";
-            context.Response.StatusCode = (int)HttpStatusCode.Conflict;
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             await context.Response.WriteAsync(e.Message);
         }
     }

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LinkShortener.Api.Controllers;
 
 [ApiController]
-[Route("[controller]/[action]")]
+[Route("[controller]")]
 public class StatisticsController : Controller
 {
     private readonly IStatisticsQueries statisticsQueries;

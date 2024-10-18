@@ -4,30 +4,30 @@ import { refreshToken as refreshTokenRequest } from './identity';
 
 export const getShortenLink = async (id: number) => {
   configureHeaders();
-  return await instance.get(`/shortenLink/get?id=${id}`);
+  return await instance.get(`/shortenLink?id=${id}`);
 };
 
 export const getShortenLinks = async () => {
   configureHeaders();
-  return await instance.get(`/shortenLink/getList`);
+  return await instance.get(`/shortenLink`);
 };
 
 export const createShortenLink = async (fullLink: string) => {
   configureHeaders();
-  return await instance.post(`/shortenLink/create`, { fullLink });
+  return await instance.post(`/shortenLink`, { fullLink });
 };
 
 export const deleteShortenLink = async (id: number) => {
   configureHeaders();
-  return await instance.delete(`/shortenLink/delete?id=${id}`);
+  return await instance.delete(`/shortenLink?id=${id}`);
 };
 
 export const getFullLink = async (token: string) => {
-  return await instance.get(`/shortenLink/getFullLink?token=${token}`);
+  return await instance.get(`/shortenLink/${token}`);
 };
 
 export const getStatistics = async (token: string) => {
-  return await instance.get(`/statistics/getStatistics?shortenLinkId=${token}`);
+  return await instance.get(`/statistics?shortenLinkId=${token}`);
 };
 
 const configureHeaders = () => {
